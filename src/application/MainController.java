@@ -19,6 +19,7 @@ public class MainController implements Initializable{
 	boolean status = true;
 	
 	GlobalKeyListener globalKeyListener;
+	GlobalMouseListener globalMouseListener;
 	
 	@FXML
 	public void startBtnAction(ActionEvent event) {
@@ -26,10 +27,14 @@ public class MainController implements Initializable{
 		System.out.println("Button is clicked");
 		if(status) {
 			GlobalScreen.addNativeKeyListener(globalKeyListener);
+			GlobalScreen.addNativeMouseListener(globalMouseListener);
+			GlobalScreen.addNativeMouseMotionListener(globalMouseListener);
 			status = false;
 		}
 		else {
 			GlobalScreen.removeNativeKeyListener(globalKeyListener);
+			GlobalScreen.removeNativeMouseListener(globalMouseListener);
+			GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);
 			status = true;
 		}
 
@@ -52,9 +57,17 @@ public class MainController implements Initializable{
 			System.exit(1);
 			}
 
+		globalMouseListener = new GlobalMouseListener();
+		try {
+			GlobalScreen.registerNativeHook();
+			}
+			catch (NativeHookException ex) {
+			System.err.println("There was a problem registering the native hook.");
+			System.err.println(ex.getMessage());
+
+			System.exit(1);
+			}
 			
-			
-		
 	}
 
 }
