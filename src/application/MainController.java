@@ -15,7 +15,8 @@ public class MainController implements Initializable{
 
 	@FXML
 	private Button startBtn;
-
+	public int keyCount = 0;
+	public int MouseCount = 0;
 	boolean status = true;
 	
 	GlobalKeyListener globalKeyListener;
@@ -28,13 +29,15 @@ public class MainController implements Initializable{
 		if(status) {
 			GlobalScreen.addNativeKeyListener(globalKeyListener);
 			GlobalScreen.addNativeMouseListener(globalMouseListener);
-			GlobalScreen.addNativeMouseMotionListener(globalMouseListener);
+			//GlobalScreen.addNativeMouseMotionListener(globalMouseListener);
+			startBtn.setText("Pause");
 			status = false;
 		}
 		else {
 			GlobalScreen.removeNativeKeyListener(globalKeyListener);
 			GlobalScreen.removeNativeMouseListener(globalMouseListener);
-			GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);
+			//GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);
+			startBtn.setText("Start");
 			status = true;
 		}
 
@@ -47,6 +50,18 @@ public class MainController implements Initializable{
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
 
+		globalKeyListener.setActivityCounterInterface(new ActivityCounterInterface() {
+			
+			@Override
+			public void addKeyActivityCount() {
+				keyCount++;
+				System.out.println("Key activity : " + keyCount);
+			}
+
+			@Override
+			public void addMouseActivityCount() { ;	}
+		});
+		
 		try {
 			GlobalScreen.registerNativeHook();
 			}
@@ -58,6 +73,18 @@ public class MainController implements Initializable{
 			}
 
 		globalMouseListener = new GlobalMouseListener();
+		globalMouseListener.setActivityCounterInterface(new ActivityCounterInterface() {
+			
+			@Override
+			public void addMouseActivityCount() {
+				MouseCount++;
+				System.out.println("Mouse activity : " + MouseCount);
+			}
+			
+			@Override
+			public void addKeyActivityCount() {;}
+		});
+		
 		try {
 			GlobalScreen.registerNativeHook();
 			}
@@ -69,5 +96,6 @@ public class MainController implements Initializable{
 			}
 			
 	}
+
 
 }
