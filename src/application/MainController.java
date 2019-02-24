@@ -1,6 +1,11 @@
 package application;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import org.jnativehook.GlobalScreen;
@@ -27,22 +32,51 @@ public class MainController implements Initializable{
 		
 		System.out.println("Button is clicked");
 		if(status) {
-			GlobalScreen.addNativeKeyListener(globalKeyListener);
-			GlobalScreen.addNativeMouseListener(globalMouseListener);
-			//GlobalScreen.addNativeMouseMotionListener(globalMouseListener);
+			//GlobalScreen.addNativeKeyListener(globalKeyListener);
+			//GlobalScreen.addNativeMouseListener(globalMouseListener);
+			/*GlobalScreen.addNativeMouseMotionListener(globalMouseListener);*/
 			startBtn.setText("Pause");
 			status = false;
+			getCurrentTimeUsingCalendar();
 		}
 		else {
-			GlobalScreen.removeNativeKeyListener(globalKeyListener);
-			GlobalScreen.removeNativeMouseListener(globalMouseListener);
-			//GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);
+			//GlobalScreen.removeNativeKeyListener(globalKeyListener);
+			//GlobalScreen.removeNativeMouseListener(globalMouseListener);
+			/*GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);*/
 			startBtn.setText("Start");
 			status = true;
 		}
+		
+	}
+	
+	String startTime;
+	String endTime;
+	String randomTime;
+	
+	Calendar cal;
+	public void getCurrentTimeUsingCalendar() {
+	    cal = Calendar.getInstance();
+	    startTime = setTimes(0);
+	    System.out.println(startTime);
+	    endTime = setTimes(10);
+	    System.out.println(endTime);
+	    randomTime = setTimes(getRandomTime() - 10 );
+	    System.out.println(randomTime);
 
 	}
 	
+	public String setTimes(int num) {
+		cal.add(Calendar.MINUTE, num);
+	    Date date = cal.getTime();
+	    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	    String formattedDate = dateFormat.format(date);
+	    return formattedDate;
+	}
+	
+	public int getRandomTime() {
+		Random random = new Random();
+		return (random.nextInt(9) + 1) ;
+	}
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -96,6 +130,5 @@ public class MainController implements Initializable{
 			}
 			
 	}
-
 
 }
