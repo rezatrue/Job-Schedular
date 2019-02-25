@@ -11,12 +11,17 @@ import java.util.ResourceBundle;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
+import application.MainController.MyService;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
-public class MainController implements Initializable{
+public class MainController  implements Initializable{
 
 	@FXML
 	private Button startBtn;
@@ -29,29 +34,54 @@ public class MainController implements Initializable{
 	
 	@FXML
 	public void startBtnAction(ActionEvent event) {
+		MyService runService = new MyService();
+		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// TODO Auto-generated method stub
+			}
+		});
 		
-		System.out.println("Button is clicked");
-		if(status) {
-			//GlobalScreen.addNativeKeyListener(globalKeyListener);
-			//GlobalScreen.addNativeMouseListener(globalMouseListener);
-			/*GlobalScreen.addNativeMouseMotionListener(globalMouseListener);*/
-			startBtn.setText("Pause");
-			status = false;
-			getCurrentTimeUsingCalendar();
-		}
-		else {
+		if (startBtn.getText().contains("Pause")) {
+			startBtn.setText("Start");
 			//GlobalScreen.removeNativeKeyListener(globalKeyListener);
 			//GlobalScreen.removeNativeMouseListener(globalMouseListener);
-			/*GlobalScreen.removeNativeMouseMotionListener(globalMouseListener);*/
-			startBtn.setText("Start");
+			status = false;
+			getCurrentTimeUsingCalendar();
+			switch(runService.getState().toString()) {
+			case "RUNNING":
+				runService.cancel();
+				break;
+			}	
+		} else if (startBtn.getText().contains("Start")) {
+			startBtn.setText("Pause");
 			status = true;
+			// calling MyService start / cancel /restart based on getState() 
+			System.out.println(runService.getState().toString());
+			//GlobalScreen.addNativeKeyListener(globalKeyListener);
+			//GlobalScreen.addNativeMouseListener(globalMouseListener);
+			switch(runService.getState().toString()) {
+			case "READY":
+				runService.start();
+				break;
+			case "CANCELLED":
+			case "SUCCEEDED":
+				runService.restart();
+				break;
+			}
+
 		}
+		
+		System.out.println("Button is clicked");
 		
 	}
 	
-	String startTime;
-	String endTime;
-	String randomTime;
+	Date startTime;
+	Date endTime;
+	Date randomTime;
+//	String startTime;
+//	String endTime;
+//	String randomTime;
 	
 	Calendar cal;
 	public void getCurrentTimeUsingCalendar() {
@@ -65,12 +95,13 @@ public class MainController implements Initializable{
 
 	}
 	
-	public String setTimes(int num) {
+	public Date setTimes(int num) {
 		cal.add(Calendar.MINUTE, num);
 	    Date date = cal.getTime();
-	    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	    String formattedDate = dateFormat.format(date);
-	    return formattedDate;
+	    return date;
+//	    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//	    String formattedDate = dateFormat.format(date);
+//	    return formattedDate;
 	}
 	
 	public int getRandomTime() {
@@ -129,6 +160,28 @@ public class MainController implements Initializable{
 			System.exit(1);
 			}
 			
+	}
+
+		
+	public class MyService extends Service<String>{
+
+		@Override
+		protected Task<String> createTask() {
+			// TODO Auto-generated method stub
+			return new Task<String>() {
+
+				@Override
+				protected String call() throws Exception {
+					// capturing images 
+					while(startTime.compareTo(endTime) < 0) {
+						System.out.println("capturing images --- ");
+					}
+					return "Start";
+				}
+				
+			};
+		}
+		
 	}
 
 }
