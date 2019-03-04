@@ -12,6 +12,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import application.MainController.MyService;
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -20,9 +21,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class MainController  implements Initializable{
-
+	@FXML
+	private Label timeLabel;
 	@FXML
 	private Button startBtn;
 	public int keyCount = 0;
@@ -34,24 +37,25 @@ public class MainController  implements Initializable{
 	
 	@FXML
 	public void startBtnAction(ActionEvent event) {
-		MyService runService = new MyService();
+				
 		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				// TODO Auto-generated method stub
 			}
 		});
-		
 		if (startBtn.getText().contains("Pause")) {
 			startBtn.setText("Start");
 			//GlobalScreen.removeNativeKeyListener(globalKeyListener);
 			//GlobalScreen.removeNativeMouseListener(globalMouseListener);
 			status = false;
-			getCurrentTimeUsingCalendar();
+
+			System.out.println(runService.getState().toString());
 			switch(runService.getState().toString()) {
 			case "RUNNING":
 				runService.cancel();
 				break;
+			
 			}	
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
@@ -60,14 +64,16 @@ public class MainController  implements Initializable{
 			System.out.println(runService.getState().toString());
 			//GlobalScreen.addNativeKeyListener(globalKeyListener);
 			//GlobalScreen.addNativeMouseListener(globalMouseListener);
+			getCurrentTimeUsingCalendar();
+			
 			switch(runService.getState().toString()) {
 			case "READY":
 				runService.start();
 				break;
-			case "CANCELLED":
-			case "SUCCEEDED":
+			case "CANCELLED":	
 				runService.restart();
 				break;
+
 			}
 
 		}
@@ -109,8 +115,13 @@ public class MainController  implements Initializable{
 		return (random.nextInt(9) + 1) ;
 	}
 	
+	MyService runService;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
+		runService = new MyService();
+		
 		
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
@@ -162,6 +173,17 @@ public class MainController  implements Initializable{
 			
 	}
 
+	int hour = 0;
+	int minute = 0;
+	int second = 0 ;
+	
+	public String timmer() {
+		second++;
+		if(second == 60) {minute ++; second = 0;}
+		if(minute == 60) {hour ++; minute = 0;}
+		String time = hour + ":"+ minute +":"+second ;
+		return time;
+	}
 		
 	public class MyService extends Service<String>{
 
@@ -174,7 +196,9 @@ public class MainController  implements Initializable{
 				protected String call() throws Exception {
 					// capturing images 
 					while(startTime.compareTo(endTime) < 0) {
-						System.out.println("capturing images --- ");
+						Thread.sleep(1000);
+						//stackoverflow.com/questions/47655695/javafx-countdown-timer-in-label-settext
+				        Platform.runLater(() -> timeLabel.setText(timmer()));
 					}
 					return "Start";
 				}
