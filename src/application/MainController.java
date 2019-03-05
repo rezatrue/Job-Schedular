@@ -31,6 +31,8 @@ public class MainController  implements Initializable{
 	public int keyCount = 0;
 	public int MouseCount = 0;
 	boolean status = true;
+	private TimeCalculator timeCalculator;
+	private ImageHandeler imageHandeler;
 	
 	GlobalKeyListener globalKeyListener;
 	GlobalMouseListener globalMouseListener;
@@ -60,11 +62,11 @@ public class MainController  implements Initializable{
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
 			status = true;
+			timeCalculator.initTimeLogger();
 			// calling MyService start / cancel /restart based on getState() 
 			System.out.println(runService.getState().toString());
 			//GlobalScreen.addNativeKeyListener(globalKeyListener);
 			//GlobalScreen.addNativeMouseListener(globalMouseListener);
-			getCurrentTimeUsingCalendar();
 			
 			switch(runService.getState().toString()) {
 			case "READY":
@@ -82,46 +84,15 @@ public class MainController  implements Initializable{
 		
 	}
 	
-	Date startTime;
-	Date endTime;
-	Date randomTime;
-//	String startTime;
-//	String endTime;
-//	String randomTime;
 	
-	Calendar cal;
-	public void getCurrentTimeUsingCalendar() {
-	    cal = Calendar.getInstance();
-	    startTime = setTimes(0);
-	    System.out.println(startTime);
-	    endTime = setTimes(10);
-	    System.out.println(endTime);
-	    randomTime = setTimes(getRandomTime() - 10 );
-	    System.out.println(randomTime);
-
-	}
-	
-	public Date setTimes(int num) {
-		cal.add(Calendar.MINUTE, num);
-	    Date date = cal.getTime();
-	    return date;
-//	    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-//	    String formattedDate = dateFormat.format(date);
-//	    return formattedDate;
-	}
-	
-	public int getRandomTime() {
-		Random random = new Random();
-		return (random.nextInt(9) + 1) ;
-	}
 	
 	MyService runService;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+		timeCalculator = new TimeCalculator();
 		runService = new MyService();
-		
+		imageHandeler = new ImageHandeler();
 		
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
@@ -177,7 +148,7 @@ public class MainController  implements Initializable{
 	int minute = 0;
 	int second = 0 ;
 	
-	public String timmer() {
+	public String timer() {
 		second++;
 		if(second == 60) {minute ++; second = 0;}
 		if(minute == 60) {hour ++; minute = 0;}
@@ -194,12 +165,34 @@ public class MainController  implements Initializable{
 
 				@Override
 				protected String call() throws Exception {
-					// capturing images 
-					while(startTime.compareTo(endTime) < 0) {
+					// capturing images
+					boolean run = true;
+					Date endTime = timeCalculator.getEndTime();
+					Date randomTime = timeCalculator.getRandomTime();
+					Date currentTime;
+					boolean screenShot = true;
+					do {
 						Thread.sleep(1000);
 						//stackoverflow.com/questions/47655695/javafx-countdown-timer-in-label-settext
-				        Platform.runLater(() -> timeLabel.setText(timmer()));
-					}
+				        Platform.runLater(() -> timeLabel.setText(timer()));
+				        currentTime = timeCalculator.getCurrentTime();
+				        
+				        if(randomTime.compareTo(currentTime) <= 0 && screenShot) { 
+				    	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+				    	    String fileName = formatter.format(randomTime);
+				        	imageHandeler.takeScreenShot();
+				        	imageHandeler.captureScreen(fileName);
+				        	screenShot = false;
+				        }
+				        if(endTime.compareTo(currentTime) <= 0) { 
+				        	timeCalculator.initTimeLogger();
+				        	endTime = timeCalculator.getEndTime();
+				        	randomTime = timeCalculator.getRandomTime();
+				        	screenShot = true;
+				        }
+				        
+					}while(run);
+					
 					return "Start";
 				}
 				
