@@ -10,16 +10,15 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-public class ImageHandeler {
-
-	public ImageHandeler() {
+public class ActivityHandeler {
+	private String imageFileName;
+	public ActivityHandeler() {
 	}
 	
-	public void takeScreenShot() {
-		System.out.println("Screenshot has been taken");
-	}
-
+	//stackoverflow.com/questions/58305/is-there-a-way-to-take-a-screenshot-using-java-and-save-it-to-some-sort-of-image
 	public void captureScreen(String fileName) throws Exception {
+		System.out.println("Screenshot has been taken");
+		this.imageFileName = fileName;
 	   Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	   Rectangle screenRectangle = new Rectangle(screenSize);
 	   Robot robot = new Robot();
@@ -27,6 +26,12 @@ public class ImageHandeler {
 	   ImageIO.write(image, "png", new File(fileName + ".png"));
        //ImageIO.write(screenShot, "JPG", new File("d:\\"+formatter.format(now.getTime())+".jpg"));
 	}
+	
+	public void storeActivity(int keyCount, int mouseCount) {
+		System.out.println("Key count : " + keyCount + "Mouse count : " + mouseCount + " Image : " + imageFileName );
+		
+	}
+	
 	
 	
 }

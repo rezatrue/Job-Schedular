@@ -29,10 +29,11 @@ public class MainController  implements Initializable{
 	@FXML
 	private Button startBtn;
 	public int keyCount = 0;
-	public int MouseCount = 0;
+	public int mouseCount = 0;
 	boolean status = true;
 	private TimeCalculator timeCalculator;
-	private ImageHandeler imageHandeler;
+	private ActivityHandeler activityHandeler;
+	
 	
 	GlobalKeyListener globalKeyListener;
 	GlobalMouseListener globalMouseListener;
@@ -46,18 +47,32 @@ public class MainController  implements Initializable{
 				// TODO Auto-generated method stub
 			}
 		});
+		
 		if (startBtn.getText().contains("Pause")) {
 			startBtn.setText("Start");
-			//GlobalScreen.removeNativeKeyListener(globalKeyListener);
-			//GlobalScreen.removeNativeMouseListener(globalMouseListener);
+			GlobalScreen.removeNativeKeyListener(globalKeyListener);
+			GlobalScreen.removeNativeMouseListener(globalMouseListener);
 			status = false;
-
+			Date currentTime = timeCalculator.getCurrentTime();
+			Date randomTime = timeCalculator.getRandomTime();
+			
+			if(randomTime.compareTo(currentTime) > 0) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+	    	    String fileName = formatter.format(currentTime);
+	        	try {
+					activityHandeler.captureScreen(fileName);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			activityHandeler.storeActivity(keyCount, mouseCount);
+			keyCount = mouseCount = 0;
 			System.out.println(runService.getState().toString());
 			switch(runService.getState().toString()) {
 			case "RUNNING":
 				runService.cancel();
-				break;
-			
+				break;	
 			}	
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
@@ -65,8 +80,8 @@ public class MainController  implements Initializable{
 			timeCalculator.initTimeLogger();
 			// calling MyService start / cancel /restart based on getState() 
 			System.out.println(runService.getState().toString());
-			//GlobalScreen.addNativeKeyListener(globalKeyListener);
-			//GlobalScreen.addNativeMouseListener(globalMouseListener);
+			GlobalScreen.addNativeKeyListener(globalKeyListener);
+			GlobalScreen.addNativeMouseListener(globalMouseListener);
 			
 			switch(runService.getState().toString()) {
 			case "READY":
@@ -92,7 +107,7 @@ public class MainController  implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		timeCalculator = new TimeCalculator();
 		runService = new MyService();
-		imageHandeler = new ImageHandeler();
+		activityHandeler = new ActivityHandeler();
 		
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
@@ -124,8 +139,8 @@ public class MainController  implements Initializable{
 			
 			@Override
 			public void addMouseActivityCount() {
-				MouseCount++;
-				System.out.println("Mouse activity : " + MouseCount);
+				mouseCount++;
+				System.out.println("Mouse activity : " + mouseCount);
 			}
 			
 			@Override
@@ -162,7 +177,8 @@ public class MainController  implements Initializable{
 		protected Task<String> createTask() {
 			// TODO Auto-generated method stub
 			return new Task<String>() {
-
+	        	
+	        	
 				@Override
 				protected String call() throws Exception {
 					// capturing images
@@ -171,6 +187,7 @@ public class MainController  implements Initializable{
 					Date randomTime = timeCalculator.getRandomTime();
 					Date currentTime;
 					boolean screenShot = true;
+					keyCount = mouseCount = 0;
 					do {
 						Thread.sleep(1000);
 						//stackoverflow.com/questions/47655695/javafx-countdown-timer-in-label-settext
@@ -180,15 +197,16 @@ public class MainController  implements Initializable{
 				        if(randomTime.compareTo(currentTime) <= 0 && screenShot) { 
 				    	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
 				    	    String fileName = formatter.format(randomTime);
-				        	imageHandeler.takeScreenShot();
-				        	imageHandeler.captureScreen(fileName);
+				        	activityHandeler.captureScreen(fileName);
 				        	screenShot = false;
 				        }
 				        if(endTime.compareTo(currentTime) <= 0) { 
 				        	timeCalculator.initTimeLogger();
 				        	endTime = timeCalculator.getEndTime();
 				        	randomTime = timeCalculator.getRandomTime();
+				        	activityHandeler.storeActivity(keyCount, mouseCount);
 				        	screenShot = true;
+				        	keyCount = mouseCount = 0;
 				        }
 				        
 					}while(run);
