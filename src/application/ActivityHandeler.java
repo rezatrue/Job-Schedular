@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 
 public class ActivityHandeler {
 	private String imageFileName;
+	private String userId;
+	
 	public ActivityHandeler() {
 	}
 	

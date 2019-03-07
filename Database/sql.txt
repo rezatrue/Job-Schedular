@@ -1,0 +1,26 @@
+
+CREATE DATABASE job_scheduler;
+
+CREATE TABLE IF NOT EXISTS employee_details ( 
+empid int(11) NOT NULL AUTO_INCREMENT,
+empName varchar(50) NOT NULL,
+empEmail varchar(100) NOT NULL,  
+empPassword int(5) NOT NULL, 
+empPhone varchar(15) NOT NULL, 
+empCreated datetime NOT NULL,
+empActive int(1) NOT NULL, 
+empLevel int(2) NOT NULL,
+PRIMARY KEY (empid),
+UNIQUE (empEmail),
+UNIQUE (empPhone) );
+
+
+CREATE TABLE IF NOT EXISTS task_log ( 
+empid int(11) NOT NULL,
+taskid int(11) NOT NULL,
+starttime datetime NOT NULL,
+endtime datetime NOT NULL,
+keycount int(10) NOT NULL,
+mousecount int(10) NOT NULL,
+image varchar(15) NOT NULL);
+
