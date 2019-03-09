@@ -9,7 +9,7 @@ public class TimeCalculator {
 	private Date startTime;
 	private Date endTime;
 	private Date randomTime;
-	private int timeBound = 2;
+	private int timeBound = 1;
 	
 	public TimeCalculator() {
 	}

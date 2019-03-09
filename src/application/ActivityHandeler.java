@@ -17,10 +17,19 @@ public class ActivityHandeler {
 	public ActivityHandeler() {
 	}
 	
+	public String getImageFileName() {
+		return this.imageFileName;
+	}
+	
+	public void setImageFileName(String fileName) {
+		this.imageFileName = fileName;
+	}
+	// need to delete image when saved
+	
 	//stackoverflow.com/questions/58305/is-there-a-way-to-take-a-screenshot-using-java-and-save-it-to-some-sort-of-image
 	public void captureScreen(String fileName) throws Exception {
 		System.out.println("Screenshot has been taken");
-		this.imageFileName = fileName;
+		setImageFileName(fileName);
 	   Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	   Rectangle screenRectangle = new Rectangle(screenSize);
 	   Robot robot = new Robot();

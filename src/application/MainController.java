@@ -28,12 +28,11 @@ public class MainController  implements Initializable{
 	private Label timeLabel;
 	@FXML
 	private Button startBtn;
-	public int keyCount = 0;
-	public int mouseCount = 0;
-	boolean status = true;
+	public LogInfo logInfo;
+	boolean status = true; // no use now
 	private TimeCalculator timeCalculator;
 	private ActivityHandeler activityHandeler;
-	
+	private ApiCaller apiCaller;
 	
 	GlobalKeyListener globalKeyListener;
 	GlobalMouseListener globalMouseListener;
@@ -66,8 +65,7 @@ public class MainController  implements Initializable{
 					e.printStackTrace();
 				}
 			}
-			activityHandeler.storeActivity(keyCount, mouseCount);
-			keyCount = mouseCount = 0;
+			saveActivity();
 			System.out.println(runService.getState().toString());
 			switch(runService.getState().toString()) {
 			case "RUNNING":
@@ -77,7 +75,8 @@ public class MainController  implements Initializable{
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
 			status = true;
-			timeCalculator.initTimeLogger();
+			logInfo = new LogInfo();
+			initTime();
 			// calling MyService start / cancel /restart based on getState() 
 			System.out.println(runService.getState().toString());
 			GlobalScreen.addNativeKeyListener(globalKeyListener);
@@ -105,6 +104,8 @@ public class MainController  implements Initializable{
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		logInfo = new LogInfo();
+		apiCaller = new ApiCaller();
 		timeCalculator = new TimeCalculator();
 		runService = new MyService();
 		activityHandeler = new ActivityHandeler();
@@ -116,8 +117,8 @@ public class MainController  implements Initializable{
 			
 			@Override
 			public void addKeyActivityCount() {
-				keyCount++;
-				System.out.println("Key activity : " + keyCount);
+				logInfo.increaseKeycount();
+				System.out.println("Key activity : " + logInfo.getKeycount());
 			}
 
 			@Override
@@ -139,8 +140,8 @@ public class MainController  implements Initializable{
 			
 			@Override
 			public void addMouseActivityCount() {
-				mouseCount++;
-				System.out.println("Mouse activity : " + mouseCount);
+				logInfo.increaseMousecount();
+				System.out.println("Mouse activity : " + logInfo.getMousecount());
 			}
 			
 			@Override
@@ -170,7 +171,27 @@ public class MainController  implements Initializable{
 		String time = hour + ":"+ minute +":"+second ;
 		return time;
 	}
-		
+	
+	private void captureImage(String fileName) {
+    	try {
+			activityHandeler.captureScreen(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void saveActivity() {
+		System.out.println(logInfo.getStarttime());
+		apiCaller.saveLog(logInfo);
+		logInfo = new LogInfo();
+	}
+	
+	private void initTime() {
+		timeCalculator.initTimeLogger();
+		logInfo.setStarttime(timeCalculator.getStartTime());
+		logInfo.setEndtime(timeCalculator.getEndTime());
+	}
+	
 	public class MyService extends Service<String>{
 
 		@Override
@@ -183,11 +204,9 @@ public class MainController  implements Initializable{
 				protected String call() throws Exception {
 					// capturing images
 					boolean run = true;
-					Date endTime = timeCalculator.getEndTime();
 					Date randomTime = timeCalculator.getRandomTime();
 					Date currentTime;
 					boolean screenShot = true;
-					keyCount = mouseCount = 0;
 					do {
 						Thread.sleep(1000);
 						//stackoverflow.com/questions/47655695/javafx-countdown-timer-in-label-settext
@@ -197,16 +216,14 @@ public class MainController  implements Initializable{
 				        if(randomTime.compareTo(currentTime) <= 0 && screenShot) { 
 				    	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
 				    	    String fileName = formatter.format(randomTime);
-				        	activityHandeler.captureScreen(fileName);
+				    	    captureImage(fileName);
+				    	    logInfo.setImage(fileName);
 				        	screenShot = false;
 				        }
-				        if(endTime.compareTo(currentTime) <= 0) { 
-				        	timeCalculator.initTimeLogger();
-				        	endTime = timeCalculator.getEndTime();
-				        	randomTime = timeCalculator.getRandomTime();
-				        	activityHandeler.storeActivity(keyCount, mouseCount);
+				        if(logInfo.getEndtime().compareTo(currentTime) <= 0) {
+				        	saveActivity();
 				        	screenShot = true;
-				        	keyCount = mouseCount = 0;
+				        	initTime();
 				        }
 				        
 					}while(run);
