@@ -78,7 +78,7 @@ class Tasklog{
     $query = "INSERT INTO
                 " . $this->table_name . "
             SET
-                empid=:empid, taskid=:taskid, starttime=:start, endtime=:ends, keycount=:keys, mousecount=:mouses, image=:image;"
+                empid=:empid, taskid=:taskid, starttime=:start, endtime=:ends, keycount=:keys, mousecount=:mouses, image=:image";
 		
     // prepare query
     $stmt = $this->conn->prepare($query);

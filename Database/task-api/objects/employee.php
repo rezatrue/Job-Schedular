@@ -15,7 +15,6 @@ class Employee{
 	public $empActive; 
 	public $empLevel;	
 	
-	
 	// constructor with $db as database connection
 	public function __construct($db){
 		$this->conn = $db;

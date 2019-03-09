@@ -24,3 +24,10 @@ keycount int(10) NOT NULL,
 mousecount int(10) NOT NULL,
 image varchar(15) NOT NULL);
 
+
+http://localhost/task-api/employee/login.php
+http://localhost/task-api/employee/register.php
+
+http://localhost/task-api/log/save.php
+http://localhost/task-api/log/list.php?emp_id=1&start_time=2019-03-09%2000:50:00&end_time=2019-03-09%2000:55:00
+
