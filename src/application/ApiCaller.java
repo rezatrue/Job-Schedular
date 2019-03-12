@@ -36,7 +36,7 @@ public class ApiCaller {
 					+ "\"starttime\":\""+ formatter.format(info.getStarttime()) + "\",\"endtime\":\"" + formatter.format(info.getEndtime()) + "\","
 					+ "\"keycount\":\""+ info.getKeycount() +"\",\"mousecount\":\""+ info.getMousecount() +"\","
 					+ "\"image\":\""+ info.getImage() +"\",\"base64encodedImage\":\""+ info.getBase64encodedImage() + "\"}";
-
+System.out.println("input > > > :" + input);
 			OutputStream os = conn.getOutputStream();
 			os.write(input.getBytes());
 			os.flush();

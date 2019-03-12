@@ -58,12 +58,7 @@ public class MainController  implements Initializable{
 			if(randomTime.compareTo(currentTime) > 0) {
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
 	    	    String fileName = formatter.format(currentTime);
-	        	try {
-					activityHandeler.captureScreen(fileName);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	    	    captureImage(fileName);
 			}
 			saveActivity();
 			System.out.println(runService.getState().toString());
@@ -173,15 +168,23 @@ public class MainController  implements Initializable{
 	}
 	
 	private void captureImage(String fileName) {
+	    logInfo.setImage(fileName);
     	try {
-			activityHandeler.captureScreen(fileName);
+    		//logInfo.setBase64encodedImage(activityHandeler.captureScreen()); 
+    		logInfo.setBase64encodedImage(activityHandeler.encoder()); 
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private int empid = 1; // Need to take id from login session
+	private int taskid = 1;
+	
 	private void saveActivity() {
 		System.out.println(logInfo.getStarttime());
+		logInfo.setEmpid(empid);
+		logInfo.setTaskid(taskid);
 		apiCaller.saveLog(logInfo);
 		logInfo = new LogInfo();
 	}
@@ -217,7 +220,6 @@ public class MainController  implements Initializable{
 				    	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
 				    	    String fileName = formatter.format(randomTime);
 				    	    captureImage(fileName);
-				    	    logInfo.setImage(fileName);
 				        	screenShot = false;
 				        }
 				        if(logInfo.getEndtime().compareTo(currentTime) <= 0) {

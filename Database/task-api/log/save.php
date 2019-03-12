@@ -33,7 +33,7 @@ $tasklog->image = $data->image;
 // inserting new restaurant data  
 if($tasklog->logtask()){
 	// copy image 
-	$imageName = '../images/'. $data->empid . '/'. $data->image . '.jpg';
+	$imageName = '../images/'. $data->empid . '/'. $data->image . '.png';
 	$imageData = base64_decode($data->base64encodedImage);
 	file_put_contents($imageName, $imageData);
 	// response status
