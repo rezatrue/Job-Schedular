@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class LogInfo {
 
-	
 	private int empid;
 	private int taskid;
 	private Date starttime;

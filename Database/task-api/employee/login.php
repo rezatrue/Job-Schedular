@@ -15,19 +15,19 @@ $db = $database->getConnection();
 // initialize object
 $employee = new Employee($db);
 
-
+/*
 // please apply post later
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
 $emp_email =  isset($_GET['email']) ? $_GET['email'] : null;
 $emp_password = isset($_GET['password']) ? $_GET['password'] : null;
 }
+*/
 
-/*
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
 $emp_email = $data->email;
 $emp_password = $data->password;
-*/
+
 
 // query employee
 $stmt = $employee->login($emp_email, $emp_password); // need to pass parameter

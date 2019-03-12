@@ -27,15 +27,21 @@ public class MainController  implements Initializable{
 	@FXML
 	private Label timeLabel;
 	@FXML
-	private Button startBtn;
+	private Button startBtn, logInBtn;
 	public LogInfo logInfo;
 	boolean status = true; // no use now
 	private TimeCalculator timeCalculator;
-	private ActivityHandeler activityHandeler;
+	private ImageHandeler imageHandeler;
 	private ApiCaller apiCaller;
 	
 	GlobalKeyListener globalKeyListener;
 	GlobalMouseListener globalMouseListener;
+	
+	@FXML
+	public void logInBtnAction(ActionEvent event) {
+		apiCaller.empLogin("ali@growtogeter.com", "123");
+	}
+	
 	
 	@FXML
 	public void startBtnAction(ActionEvent event) {
@@ -103,7 +109,7 @@ public class MainController  implements Initializable{
 		apiCaller = new ApiCaller();
 		timeCalculator = new TimeCalculator();
 		runService = new MyService();
-		activityHandeler = new ActivityHandeler();
+		imageHandeler = new ImageHandeler();
 		
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
@@ -169,9 +175,8 @@ public class MainController  implements Initializable{
 	
 	private void captureImage(String fileName) {
 	    logInfo.setImage(fileName);
-    	try {
-    		//logInfo.setBase64encodedImage(activityHandeler.captureScreen()); 
-    		logInfo.setBase64encodedImage(activityHandeler.encoder()); 
+    	try { 
+    		logInfo.setBase64encodedImage(imageHandeler.captureScreen()); 
 
 		} catch (Exception e) {
 			e.printStackTrace();
