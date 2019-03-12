@@ -22,24 +22,38 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 public class MainController  implements Initializable{
 	@FXML
-	private Label timeLabel;
+	private Text timeLabel;
 	@FXML
-	private Button startBtn, logInBtn;
+	private Text empName;
+	@FXML
+	private Button startBtn;
+	@FXML
+	private Button logInBtn;
+	@FXML
+	private TextField textEmail;
+	@FXML
+	private PasswordField textPassword;
 	public LogInfo logInfo;
 	boolean status = true; // no use now
 	private TimeCalculator timeCalculator;
 	private ImageHandeler imageHandeler;
 	private ApiCaller apiCaller;
+	private Employee employee;
+
 	
 	GlobalKeyListener globalKeyListener;
 	GlobalMouseListener globalMouseListener;
 	
 	@FXML
 	public void logInBtnAction(ActionEvent event) {
-		apiCaller.empLogin("ali@growtogeter.com", "123");
+		employee = apiCaller.empLogin("ali@growtogeter.com", "123");
+		System.out.println("Welcome " + employee.getEmpName());
 	}
 	
 	
@@ -105,6 +119,7 @@ public class MainController  implements Initializable{
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		employee = new Employee();
 		logInfo = new LogInfo();
 		apiCaller = new ApiCaller();
 		timeCalculator = new TimeCalculator();
@@ -183,7 +198,7 @@ public class MainController  implements Initializable{
 		}
 	}
 	
-	private int empid = 1; // Need to take id from login session
+	private int empid = 1; // Need to take from employee 
 	private int taskid = 1;
 	
 	private void saveActivity() {

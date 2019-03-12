@@ -71,18 +71,12 @@ public class ApiCaller {
 			e.printStackTrace();
 		} 
 		
-		// need to fix
-		// extracting data from response 
-//		JSONObject obj = new JSONObject(responseString);
-//	    String res = obj.getString("response");
-//	    String tasks = obj.getString("tasks");
-//	    System.out.println(res + " : "+ tasks);
 		
 	}
 	
 	
-	public void empLogin(String email, String password) {
-		
+	public Employee empLogin(String email, String password) {
+		Employee employee = new Employee();
 		try {
 			URL url = new URL(loginAuthPath);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -129,20 +123,19 @@ public class ApiCaller {
 	    System.out.println(res);
 
 	    if(res.equalsIgnoreCase("ok")) {
-		    JSONArray employee = obj.getJSONArray("employee");
+		    JSONArray emp = obj.getJSONArray("employee");
 		    
-		    for (int i = 0; i < employee.length(); i++)
+		    for (int i = 0; i < emp.length(); i++)
 		    {
-		        String id = employee.getJSONObject(i).getString("empid");
-		        String name = employee.getJSONObject(i).getString("empName");
-		        String mail = employee.getJSONObject(i).getString("empEmail");
-		        String phone = employee.getJSONObject(i).getString("empPhone");
-		        String create = employee.getJSONObject(i).getString("empCreated");
-		        String active = employee.getJSONObject(i).getString("empActive");
-		        String level = employee.getJSONObject(i).getString("empLevel");
-			    System.out.println(id + " : " + name + " : " + mail + " : " + phone + " : " + create + " : " + active + " : " + level);
+		    	employee.setEmpid(Integer.parseInt(emp.getJSONObject(i).getString("empid")));
+		    	employee.setEmpName(emp.getJSONObject(i).getString("empName"));
+		    	employee.setEmpEmail(emp.getJSONObject(i).getString("empEmail"));
+		    	employee.setEmpActive(Integer.parseInt(emp.getJSONObject(i).getString("empActive")));
+		    	employee.setEmpLevel(Integer.parseInt(emp.getJSONObject(i).getString("empLevel")));
 		    }
 	    }
+	    
+	    return employee;
 		
 	}
 	
