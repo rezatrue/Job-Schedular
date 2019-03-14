@@ -1,5 +1,6 @@
 package application;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -12,6 +13,14 @@ public class TimeCalculator {
 	private int timeBound = 10;
 	
 	public TimeCalculator() {
+	}
+	
+	public String getToday() {
+		cal = Calendar.getInstance();
+		Date date = cal.getTime();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
+	    String day = formatter.format(date);
+		return day;
 	}
 	
 	public Date getStartTime() {

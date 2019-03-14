@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,68 +11,33 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="160.0" prefWidth="233.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+<AnchorPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <StackPane prefHeight="160.0" prefWidth="233.0">
+      <StackPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffff;">
-               <children>
-                  <GridPane prefHeight="160.0" prefWidth="233.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="78.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Button fx:id="logInBtn" mnemonicParsing="false" onAction="#logInBtnAction" text="Login" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Please Login" GridPane.halignment="CENTER" />
-                        <GridPane GridPane.rowIndex="1">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="72.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="161.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="22.0" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email :" GridPane.halignment="CENTER" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password :" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                              <TextField prefHeight="25.0" prefWidth="132.0" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                                 <GridPane.margin>
-                                    <Insets left="5.0" right="5.0" />
-                                 </GridPane.margin>
-                              </TextField>
-                              <TextField GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                 <GridPane.margin>
-                                    <Insets left="5.0" right="5.0" />
-                                 </GridPane.margin>
-                              </TextField>
-                           </children>
-                        </GridPane>
-                     </children>
-                  </GridPane>
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane fx:id="TrakingPane" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <GridPane prefHeight="160.0" prefWidth="233.0" style="-fx-background-color: ffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="49.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="83.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="71.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="83.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="72.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome" GridPane.halignment="CENTER" />
-                        <Button mnemonicParsing="false" onAction="#startBtnAction" text="Start" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <Text fx:id="empName" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                           <GridPane.margin>
+                              <Insets left="5.0" top="10.0" />
+                           </GridPane.margin></Text>
+                        <Text fx:id="dayLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="1 JAN 2019" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="10.0" />
+                           </GridPane.margin>
+                        </Text>
+                        <Button fx:id="startBtn" mnemonicParsing="false" onAction="#startBtnAction" text="Start" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                         <GridPane GridPane.rowIndex="1">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.0" minWidth="10.0" prefWidth="114.0" />
@@ -82,11 +48,59 @@
                           </rowConstraints>
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Time: " GridPane.halignment="CENTER" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="00 : 00 " GridPane.columnIndex="1" GridPane.halignment="LEFT">
+                              <Text fx:id="timeLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="00 : 00 " GridPane.columnIndex="1" GridPane.halignment="LEFT">
                                  <GridPane.margin>
                                     <Insets left="5.0" />
                                  </GridPane.margin>
                               </Text>
+                           </children>
+                        </GridPane>
+                        <Button fx:id="logOutBtn" mnemonicParsing="false" onAction="#logOutBtnAction" text="Sign out" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" right="5.0" />
+                           </GridPane.margin>
+                        </Button>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="loginPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffff;">
+               <children>
+                  <GridPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="78.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Button fx:id="logInBtn" mnemonicParsing="false" onAction="#logInBtnAction" text="Login" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                        <Text fx:id="msgLogin" strokeType="OUTSIDE" strokeWidth="0.0" text="Please Login" GridPane.halignment="CENTER" />
+                        <GridPane GridPane.rowIndex="1">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="62.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="138.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="22.0" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email :" GridPane.halignment="CENTER" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                              <TextField fx:id="textEmail" prefHeight="25.0" prefWidth="132.0" promptText="email address" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <PasswordField fx:id="textPassword" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </PasswordField>
                            </children>
                         </GridPane>
                      </children>

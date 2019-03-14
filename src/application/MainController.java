@@ -12,6 +12,8 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import application.MainController.MyService;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -24,23 +26,30 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class MainController  implements Initializable{
+	@FXML
+	private Text msgLogin;
 	@FXML
 	private Text timeLabel;
 	@FXML
 	private Text empName;
 	@FXML
+	private Text dayLabel;
+	@FXML
 	private Button startBtn;
 	@FXML
 	private Button logInBtn;
+	@FXML
+	private Button logOutBtn;
 	@FXML
 	private TextField textEmail;
 	@FXML
 	private PasswordField textPassword;
 	public LogInfo logInfo;
-	boolean status = true; // no use now
 	private TimeCalculator timeCalculator;
 	private ImageHandeler imageHandeler;
 	private ApiCaller apiCaller;
@@ -51,11 +60,69 @@ public class MainController  implements Initializable{
 	GlobalMouseListener globalMouseListener;
 	
 	@FXML
+	private AnchorPane loginPane;
+	@FXML
+	private AnchorPane TrakingPane;
+	
+	private int taskid = 1; // need take task id from user
+	
+	@FXML
 	public void logInBtnAction(ActionEvent event) {
-		employee = apiCaller.empLogin("ali@growtogeter.com", "123");
-		System.out.println("Welcome " + employee.getEmpName());
+		String email = textEmail.getText();
+		String password = textPassword.getText();
+		System.out.println("email " + email);
+		System.out.println("password " + password);
+
+		if(email !="" || password != "") {
+			employee = apiCaller.empLogin(email, password);
+			//System.out.println("Welcome " + employee.getEmpName());	
+		}
+		if(employee.getEmpid() > 0) {
+			empName.setText(employee.getEmpName());
+			trakingPaneUp();
+		}
 	}
 	
+	@FXML
+	public void logOutBtnAction(ActionEvent event) {
+		employee = new Employee();
+		loginPaneUp();
+	}
+	
+	//www.youtube.com/watch?v=8zOSqvKNTlY&t=4s
+	private void trakingPaneUp() {
+		TranslateTransition tr1 = new TranslateTransition();
+		tr1.setDuration(Duration.millis(100));
+		tr1.setToX(0);
+		tr1.setToY(-200);
+		tr1.setNode(loginPane);
+		TranslateTransition tr2 = new TranslateTransition();
+		tr2.setDuration(Duration.millis(100));
+		tr2.setFromX(0);
+		tr2.setFromY(200);
+		tr2.setToX(0);
+		tr2.setToY(0);
+		tr2.setNode(TrakingPane);
+		ParallelTransition pt = new ParallelTransition(tr1, tr2);
+		pt.play();
+	}
+	
+	private void loginPaneUp() {
+		TranslateTransition tr1 = new TranslateTransition();
+		tr1.setDuration(Duration.millis(100));
+		tr1.setToX(0);
+		tr1.setToY(200);
+		tr1.setNode(TrakingPane);
+		TranslateTransition tr2 = new TranslateTransition();
+		tr2.setDuration(Duration.millis(100));
+		tr2.setFromX(0);
+		tr2.setFromY(-200);
+		tr2.setToX(0);
+		tr2.setToY(0);
+		tr2.setNode(loginPane);
+		ParallelTransition pt = new ParallelTransition(tr1, tr2);
+		pt.play();
+	}
 	
 	@FXML
 	public void startBtnAction(ActionEvent event) {
@@ -71,7 +138,6 @@ public class MainController  implements Initializable{
 			startBtn.setText("Start");
 			GlobalScreen.removeNativeKeyListener(globalKeyListener);
 			GlobalScreen.removeNativeMouseListener(globalMouseListener);
-			status = false;
 			Date currentTime = timeCalculator.getCurrentTime();
 			Date randomTime = timeCalculator.getRandomTime();
 			
@@ -89,7 +155,6 @@ public class MainController  implements Initializable{
 			}	
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
-			status = true;
 			logInfo = new LogInfo();
 			initTime();
 			// calling MyService start / cancel /restart based on getState() 
@@ -125,6 +190,8 @@ public class MainController  implements Initializable{
 		timeCalculator = new TimeCalculator();
 		runService = new MyService();
 		imageHandeler = new ImageHandeler();
+		dayLabel.setText(timeCalculator.getToday());
+		
 		
 		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
@@ -198,12 +265,11 @@ public class MainController  implements Initializable{
 		}
 	}
 	
-	private int empid = 1; // Need to take from employee 
-	private int taskid = 1;
+	
 	
 	private void saveActivity() {
 		System.out.println(logInfo.getStarttime());
-		logInfo.setEmpid(empid);
+		logInfo.setEmpid(employee.getEmpid());
 		logInfo.setTaskid(taskid);
 		apiCaller.saveLog(logInfo);
 		logInfo = new LogInfo();
