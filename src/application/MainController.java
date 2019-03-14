@@ -29,7 +29,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+// Developed by Ali Reza (Iron Man)
 public class MainController  implements Initializable{
 	@FXML
 	private Text msgLogin;
@@ -87,6 +87,9 @@ public class MainController  implements Initializable{
 	public void logOutBtnAction(ActionEvent event) {
 		employee = new Employee();
 		loginPaneUp();
+		pauseSequence();
+		
+		
 	}
 	
 	//www.youtube.com/watch?v=8zOSqvKNTlY&t=4s
@@ -124,9 +127,30 @@ public class MainController  implements Initializable{
 		pt.play();
 	}
 	
+	private void pauseSequence() {
+		startBtn.setText("Start");
+		GlobalScreen.removeNativeKeyListener(globalKeyListener);
+		GlobalScreen.removeNativeMouseListener(globalMouseListener);
+		Date currentTime = timeCalculator.getCurrentTime();
+		Date randomTime = timeCalculator.getRandomTime();
+		
+		if(randomTime.compareTo(currentTime) > 0) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+    	    String fileName = formatter.format(currentTime);
+    	    captureImage(fileName);
+		}
+		logInfo.setEndtime(currentTime);
+		saveActivity();
+		
+		switch(runService.getState().toString()) {
+		case "RUNNING":
+			runService.cancel();
+			break;	
+		}
+	}
 	@FXML
 	public void startBtnAction(ActionEvent event) {
-				
+			
 		runService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
@@ -135,24 +159,8 @@ public class MainController  implements Initializable{
 		});
 		
 		if (startBtn.getText().contains("Pause")) {
-			startBtn.setText("Start");
-			GlobalScreen.removeNativeKeyListener(globalKeyListener);
-			GlobalScreen.removeNativeMouseListener(globalMouseListener);
-			Date currentTime = timeCalculator.getCurrentTime();
-			Date randomTime = timeCalculator.getRandomTime();
-			
-			if(randomTime.compareTo(currentTime) > 0) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
-	    	    String fileName = formatter.format(currentTime);
-	    	    captureImage(fileName);
-			}
-			saveActivity();
-			System.out.println(runService.getState().toString());
-			switch(runService.getState().toString()) {
-			case "RUNNING":
-				runService.cancel();
-				break;	
-			}	
+			pauseSequence();
+				
 		} else if (startBtn.getText().contains("Start")) {
 			startBtn.setText("Pause");
 			logInfo = new LogInfo();
@@ -193,7 +201,7 @@ public class MainController  implements Initializable{
 		dayLabel.setText(timeCalculator.getToday());
 		
 		
-		// http://www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
+		//www.iamkarthi.com/tutorial-jnativehook-control-native-mouse-and-keyboard-calls-outside-java/
 		globalKeyListener = new GlobalKeyListener();
 
 		globalKeyListener.setActivityCounterInterface(new ActivityCounterInterface() {
