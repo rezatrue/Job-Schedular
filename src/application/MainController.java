@@ -85,10 +85,12 @@ public class MainController  implements Initializable{
 	
 	@FXML
 	public void logOutBtnAction(ActionEvent event) {
+		
+		if (startBtn.getText().contains("Pause")) {
+			pauseSequence();		
+		}
 		employee = new Employee();
 		loginPaneUp();
-		pauseSequence();
-		
 		
 	}
 	
@@ -128,6 +130,12 @@ public class MainController  implements Initializable{
 	}
 	
 	private void pauseSequence() {
+		switch(runService.getState().toString()) {
+		case "RUNNING":
+			runService.cancel();
+			break;	
+		}
+		
 		startBtn.setText("Start");
 		GlobalScreen.removeNativeKeyListener(globalKeyListener);
 		GlobalScreen.removeNativeMouseListener(globalMouseListener);
@@ -142,11 +150,7 @@ public class MainController  implements Initializable{
 		logInfo.setEndtime(currentTime);
 		saveActivity();
 		
-		switch(runService.getState().toString()) {
-		case "RUNNING":
-			runService.cancel();
-			break;	
-		}
+		
 	}
 	@FXML
 	public void startBtnAction(ActionEvent event) {
@@ -177,13 +181,9 @@ public class MainController  implements Initializable{
 			case "CANCELLED":	
 				runService.restart();
 				break;
-
 			}
-
 		}
-		
 		System.out.println("Button is clicked");
-		
 	}
 	
 	
@@ -267,12 +267,10 @@ public class MainController  implements Initializable{
 	    logInfo.setImage(fileName);
     	try { 
     		logInfo.setBase64encodedImage(imageHandeler.captureScreen()); 
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	
 	private void saveActivity() {
@@ -320,6 +318,7 @@ public class MainController  implements Initializable{
 				        	saveActivity();
 				        	screenShot = true;
 				        	initTime();
+				        	randomTime = timeCalculator.getRandomTime();
 				        }
 				        
 					}while(run);
